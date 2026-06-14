@@ -41,7 +41,13 @@ The output is written to `dist/<mod-name>_<version>.zip`.
 
 The workflow runs on every `push`, `pull_request`, and manual `workflow_dispatch`.
 
-Every successful run uploads a Factorio-ready ZIP as a build artifact. Pushing a tag named `v<version>` where `<version>` matches `info.json` additionally creates or updates a GitHub Release and attaches the same ZIP.
+Every successful run uploads a Factorio-ready ZIP as a build artifact. A GitHub Release is created or updated when one of these release triggers applies:
+
+- Pushing a tag named `v<version>` where `<version>` matches `info.json`.
+- Pushing to `main` after the `info.json` version changed.
+- Pushing to `main` when the release for the current `info.json` version is missing.
+
+The `main` branch triggers create the matching `v<version>` tag at the workflow commit when GitHub Release creation needs a new tag.
 
 ## Pre-Release Checks
 

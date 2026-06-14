@@ -11,12 +11,18 @@ jobs:
     outputs:
       archive_name: ${{ steps.package.outputs.archive_name }}
       mod_version: ${{ steps.package.outputs.mod_version }}
+      release_reason: ${{ steps.release-trigger.outputs.release_reason }}
+      release_tag: ${{ steps.release-trigger.outputs.release_tag }}
+      release_target: ${{ steps.release-trigger.outputs.release_target }}
+      should_release: ${{ steps.release-trigger.outputs.should_release }}
     permissions:
       contents: read
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Install packaging tools
         shell: bash
@@ -35,6 +41,69 @@ jobs:
         id: package
         shell: bash
         run: bash scripts/package-mod.sh
+
+      - name: Detect release trigger
+        id: release-trigger
+        shell: bash
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          MOD_VERSION: ${{ steps.package.outputs.mod_version }}
+        run: |
+          set -euo pipefail
+
+          should_release="false"
+          release_reason=""
+          release_tag=""
+          release_target="${GITHUB_SHA}"
+          expected_tag="v${MOD_VERSION}"
+
+          version_changed="false"
+          if [ "${GITHUB_REF}" = "refs/heads/main" ] && [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            info_changed="false"
+            previous_version=""
+
+            if [[ "${BEFORE_SHA}" =~ ^0+$ ]]; then
+              info_changed="true"
+            elif git cat-file -e "${BEFORE_SHA}^{commit}" 2>/dev/null; then
+              if ! git diff --quiet "${BEFORE_SHA}" "${GITHUB_SHA}" -- info.json; then
+                info_changed="true"
+                previous_info="$(git show "${BEFORE_SHA}:info.json" 2>/dev/null || true)"
+                if [ -n "${previous_info}" ]; then
+                  previous_version="$(jq -r '.version // empty' <<< "${previous_info}" | tr -d '\r')"
+                fi
+              fi
+            else
+              info_changed="$(jq -r '[.commits[]? | (.added[]?, .modified[]?, .removed[]?)] | any(. == "info.json")' "${GITHUB_EVENT_PATH}")"
+            fi
+
+            if [ "${info_changed}" = "true" ] && [ "${previous_version}" != "${MOD_VERSION}" ]; then
+              version_changed="true"
+            fi
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            should_release="true"
+            release_reason="tag"
+            release_tag="${GITHUB_REF_NAME}"
+          elif [ "${GITHUB_REF}" = "refs/heads/main" ] && [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            release_tag="${expected_tag}"
+            if [ "${version_changed}" = "true" ]; then
+              should_release="true"
+              release_reason="version-changed"
+            elif ! gh release view "${expected_tag}" >/dev/null 2>&1; then
+              should_release="true"
+              release_reason="missing-release"
+            fi
+          fi
+
+          {
+            echo "release_reason=${release_reason}"
+            echo "release_tag=${release_tag}"
+            echo "release_target=${release_target}"
+            echo "should_release=${should_release}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Verify release ZIP
         shell: bash
@@ -64,7 +133,7 @@ jobs:
           fi
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.package.outputs.archive_name }}
           path: ${{ steps.package.outputs.archive_path }}
@@ -73,13 +142,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: needs.build.outputs.should_release == 'true'
     permissions:
       contents: write
 
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ${{ needs.build.outputs.archive_name }}
           path: release-artifacts
@@ -88,22 +157,29 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           ARCHIVE_NAME: ${{ needs.build.outputs.archive_name }}
           MOD_VERSION: ${{ needs.build.outputs.mod_version }}
+          RELEASE_REASON: ${{ needs.build.outputs.release_reason }}
+          RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
+          RELEASE_TARGET: ${{ needs.build.outputs.release_target }}
         run: |
           set -euo pipefail
 
           archive_path="release-artifacts/${ARCHIVE_NAME}"
           expected_tag="v${MOD_VERSION}"
-          if [ "${GITHUB_REF_NAME}" != "${expected_tag}" ]; then
-            echo "::error::Tag ${GITHUB_REF_NAME} does not match info.json version ${expected_tag}."
+          if [ "${RELEASE_TAG}" != "${expected_tag}" ]; then
+            echo "::error::Release tag ${RELEASE_TAG} does not match info.json version ${expected_tag}."
             exit 1
           fi
 
-          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
-            gh release upload "${GITHUB_REF_NAME}" "${archive_path}" --clobber
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_TAG}" "${archive_path}" --clobber
           else
-            gh release create "${GITHUB_REF_NAME}" "${archive_path}" \
+            gh release create "${RELEASE_TAG}" "${archive_path}" \
               --title "No Aquilo ${MOD_VERSION}" \
-              --notes "Factorio-ready release build: ${ARCHIVE_NAME}"
+              --notes "Factorio-ready release build: ${ARCHIVE_NAME}" \
+              --target "${RELEASE_TARGET}"
           fi
+
+          echo "Published ${RELEASE_TAG} from ${RELEASE_REASON}."
