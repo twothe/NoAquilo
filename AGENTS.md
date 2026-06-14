@@ -7,6 +7,7 @@
 - When removing Aquilo, audit progression gates, space connections, item `default_import_location` values, technology unlocks, recipe `surface_conditions`, tips, locale strings, and Factoriopedia-facing text together.
 - Avoid broad string-based deletion. Patch known Space Age prototypes explicitly and fail clearly when required prototypes are missing.
 - Keep `docs/` and `testcases.md` current when gameplay, progression, packaging, or validation workflow changes.
+- For code changes, automatically bump `info.json` version: use a minor bump for compatible implementation or gameplay changes and a major bump for breaking progression, save, or public contract changes, unless the user requests an exact version or no bump.
 - Prefer a data-stage-only implementation unless a runtime feature is clearly needed. This mod should primarily patch prototypes in `data.lua`, `data-updates.lua`, and `data-final-fixes.lua`.
 - Use tabs for Lua indentation, following the local Factorio modding convention from nearby projects.
 - Full validation requires loading the mod in Factorio. Lua syntax checks are useful but do not prove data-stage correctness.
