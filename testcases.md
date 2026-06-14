@@ -1,0 +1,28 @@
+# No Aquilo Testcases
+
+- Load: the mod loads with Space Age enabled and no prototype errors.
+- Starmap: Aquilo is not available as a research unlock, route, or logistics destination.
+- Routes: `gleba-aquilo`, `fulgora-aquilo`, and `aquilo-solar-system-edge` are gone.
+- Routes: `fulgora-solar-system-edge` exists with length `150000` and uses the Aquilo-to-edge asteroid profile.
+- Routes: `fulgora-solar-system-edge` does not use Aquilo icon layers or locale.
+- Technologies: `planet-discovery-aquilo` is not available.
+- Technologies: `lithium-processing` uses normal research cost `500`, time `60`, and all science packs except Military, Cryogenic, and Promethium.
+- Technologies: `ammonia-synthesis`, `fluorine-processing`, and `lithium-recovery` use the same science-pack family.
+- Technologies: `lithium-recovery` costs `2000`, time `60`, and requires `lithium-processing`, `ammonia-synthesis`, and `fluorine-processing`.
+- Lithium: raw lithium is not visible or obtainable before `lithium-processing`.
+- Lithium: late lithium-bearing scrap recycling unlocks after `lithium-processing` and appears as its own UI recipe.
+- Lithium: `lithium-recovery` unlocks and crafts `50 Scrap + 50 Petroleum Gas -> 10 Lithium` in 10 seconds.
+- Ammonia: `ammonia-synthesis` crafts `2 Spoilage + 2 Iron Ore + 100 Steam -> 50 Ammonia` in 2 seconds.
+- Ammonia: `ammoniacal-solution-separation`, `solid-fuel-from-ammonia`, and `ammonia-rocket-fuel` are not part of normal progression.
+- Fluorine: Fluorit exists on Vulcanus and `fluorine-extraction` crafts `10 Fluorit + 100 Sulfuric Acid -> 100 Fluorine` in 4 seconds.
+- Fluorine: Fluorit uses the `calcite` ore icon as the asset basis and has uranium-like coloring.
+- Fluorine: Vulcanus map generation reports non-zero `fluorite` outside the starting area.
+- Removed progression: `ice-platform` and `lithium-brine` are not part of normal progression.
+- Surface conditions: Aquilo-only restrictions are removed from required recipes, while Vulcanus, Gleba, Fulgora, and Space-only restrictions remain intact.
+- Default imports: no normal item uses `default_import_location = "aquilo"`.
+- Default imports: configured Aquilo former imports point to Fulgora or Vulcanus as specified in the design document.
+- Default imports: generated `fluoroketone-cold-barrel` and `fluoroketone-hot-barrel` do not point to Aquilo.
+- Cryogenic chain: Cryogenic Plant, Cryogenic Science, Quantum Processor, Fusion, Foundation, Railgun, and Promethium Science are reachable without Aquilo.
+- Factoriopedia/UI: Aquilo-only tips, simulations, and recipe hints do not direct the player to Aquilo.
+- Factoriopedia/UI: technology effects do not reference removed recipes such as `ammonia-rocket-fuel`.
+- New-game scope: a new Space Age game can progress from the three inner planet science packs to Solar System Edge unlock without visiting Aquilo.

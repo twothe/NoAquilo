@@ -1,0 +1,12 @@
+{
+  "name": "no-aquilo",
+  "version": "0.1.0",
+  "title": "No Aquilo",
+  "author": "No Aquilo contributors",
+  "factorio_version": "2.0",
+  "dependencies": [
+    "base >= 2.0.0",
+    "space-age >= 2.0.0"
+  ],
+  "description": "Removes Aquilo from Space Age progression and relocates its resources to the remaining planets."
+}

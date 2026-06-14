@@ -1,0 +1,12 @@
+# Factorio runtime and local packaging artifacts
+*.zip
+*.log
+script-output/
+tmp/
+_factorio-test/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
