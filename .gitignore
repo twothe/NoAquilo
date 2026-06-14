@@ -1,6 +1,7 @@
 # Factorio runtime and local packaging artifacts
 *.zip
 *.log
+dist/
 script-output/
 tmp/
 _factorio-test/

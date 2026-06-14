@@ -1,6 +1,8 @@
 # Release Process
 
-The project does not have a release script yet. When one is added, it should produce a Factorio-compatible archive named:
+Release builds are produced by `scripts/package-mod.sh` and by the GitHub Actions workflow in `.github/workflows/build-release.yml`.
+
+The generated archive is named:
 
 ```text
 <mod-name>_<version>.zip
@@ -22,6 +24,24 @@ Exclude development-only files from release archives:
 - `todo.md`
 - release/check scripts
 - temporary files
+
+The package script copies only Factorio runtime paths, so development files are excluded by construction.
+
+## Local Build
+
+Run:
+
+```bash
+bash scripts/package-mod.sh
+```
+
+The output is written to `dist/<mod-name>_<version>.zip`.
+
+## GitHub Actions
+
+The workflow runs on every `push`, `pull_request`, and manual `workflow_dispatch`.
+
+Every successful run uploads a Factorio-ready ZIP as a build artifact. Pushing a tag named `v<version>` where `<version>` matches `info.json` additionally creates or updates a GitHub Release and attaches the same ZIP.
 
 ## Pre-Release Checks
 

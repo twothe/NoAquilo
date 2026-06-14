@@ -1,0 +1,109 @@
+name: Build Factorio Release
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      archive_name: ${{ steps.package.outputs.archive_name }}
+      mod_version: ${{ steps.package.outputs.mod_version }}
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install packaging tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y jq lua5.4 unzip zip
+
+      - name: Validate Lua syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          luac5.4 -p data.lua data-updates.lua data-final-fixes.lua prototypes/*.lua
+
+      - name: Build Factorio mod ZIP
+        id: package
+        shell: bash
+        run: bash scripts/package-mod.sh
+
+      - name: Verify release ZIP
+        shell: bash
+        env:
+          ARCHIVE_PATH: ${{ steps.package.outputs.archive_path }}
+          PACKAGE_NAME: ${{ steps.package.outputs.package_name }}
+        run: |
+          set -euo pipefail
+
+          unzip -l "${ARCHIVE_PATH}"
+
+          top_level_count="$(unzip -Z1 "${ARCHIVE_PATH}" | awk -F/ 'NF {print $1}' | sort -u | wc -l | tr -d ' ')"
+          if [ "${top_level_count}" != "1" ]; then
+            echo "::error::Release archive must contain exactly one top-level directory."
+            exit 1
+          fi
+
+          if ! unzip -Z1 "${ARCHIVE_PATH}" | grep -qx "${PACKAGE_NAME}/info.json"; then
+            echo "::error::Release archive does not contain ${PACKAGE_NAME}/info.json."
+            exit 1
+          fi
+
+          disallowed='(^|/)(\.git|\.github|docs|scripts|AGENTS\.md|README\.md|testcases\.md|todo\.md|_factorio-test|dist)(/|$)'
+          if unzip -Z1 "${ARCHIVE_PATH}" | grep -E "${disallowed}"; then
+            echo "::error::Release archive contains development-only files."
+            exit 1
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.package.outputs.archive_name }}
+          path: ${{ steps.package.outputs.archive_path }}
+          if-no-files-found: error
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.archive_name }}
+          path: release-artifacts
+
+      - name: Create or update GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARCHIVE_NAME: ${{ needs.build.outputs.archive_name }}
+          MOD_VERSION: ${{ needs.build.outputs.mod_version }}
+        run: |
+          set -euo pipefail
+
+          archive_path="release-artifacts/${ARCHIVE_NAME}"
+          expected_tag="v${MOD_VERSION}"
+          if [ "${GITHUB_REF_NAME}" != "${expected_tag}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match info.json version ${expected_tag}."
+            exit 1
+          fi
+
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" "${archive_path}" --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" "${archive_path}" \
+              --title "No Aquilo ${MOD_VERSION}" \
+              --notes "Factorio-ready release build: ${ARCHIVE_NAME}"
+          fi
