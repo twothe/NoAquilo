@@ -1,3 +1,4 @@
+-- Removes Aquilo-facing progression and reconnects the remaining endgame graph.
 local helpers = require("prototypes.helpers")
 
 local function remove_aquilo_space_unlocks()
@@ -49,7 +50,9 @@ end
 local function patch_lithium_processing()
 	local technology = helpers.require_raw("technology", "lithium-processing")
 
-	helpers.set_recipe_unlocks(technology, {"lithium-plate", "scrap-lithium-recycling"})
+	helpers.remove_recipe_unlock(technology, "lithium")
+	helpers.add_recipe_unlock(technology, "lithium-plate")
+	helpers.add_recipe_unlock(technology, "scrap-lithium-recycling")
 	technology.prerequisites = {"planet-discovery-fulgora"}
 	helpers.set_science_unit(technology, 500, 60)
 end
@@ -76,11 +79,13 @@ local function hide_removed_progression()
 
 	helpers.hide_item("ice-platform")
 	helpers.set_default_import_location("ice-platform", nil)
+	helpers.hide_prototype("tile", "ice-platform")
 
 	helpers.hide_prototype("fluid", "ammoniacal-solution")
 	helpers.hide_prototype("fluid", "lithium-brine")
 	helpers.hide_prototype("resource", "lithium-brine")
 	helpers.hide_prototype("resource", "fluorine-vent")
+	helpers.hide_prototype("planet", "aquilo")
 end
 
 local function patch_surface_conditions()

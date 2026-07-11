@@ -14,7 +14,7 @@
 
 # Project Overview
 
-No Aquilo is a Factorio 2.0 Space Age mod. It removes Aquilo from the playable progression and relocates Aquilo-dependent resources and late-game production to the remaining planets.
+No Aquilo is a Factorio 2.1 Space Age mod. It removes Aquilo from the playable progression and relocates Aquilo-dependent resources and late-game production to the remaining planets. Factorio 2.0 compatibility is intentionally not supported.
 
 The intended resource split is:
 
@@ -39,3 +39,4 @@ The intended resource split is:
 - Fluorite: New Vulcanus ore proposed by this mod as the non-Aquilo source for fluorine.
 - Lithium recovery: Fulgora-based replacement for Aquilo lithium sources.
 - Solar system edge: Late space destination that must receive a new route because the original route starts from Aquilo.
+- Stellar discovery: Factorio 2.1 technology `stellar-discovery-solar-system-edge`, which unlocks the Solar system edge after Fusion Reactor and Railgun.

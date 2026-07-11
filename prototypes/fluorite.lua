@@ -1,3 +1,4 @@
+-- Defines Fluorite and integrates its resource generation into Vulcanus.
 local helpers = require("prototypes.helpers")
 
 local fluorite_tint = {r = 0.36, g = 0.86, b = 0.20, a = 1.0}

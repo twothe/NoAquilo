@@ -1,3 +1,4 @@
+-- Defines the replacement ammonia, fluorine, and lithium production recipes.
 local helpers = require("prototypes.helpers")
 
 local scrap_lithium_recycling = table.deepcopy(helpers.require_raw("recipe", "scrap-recycling"))
@@ -7,7 +8,7 @@ scrap_lithium_recycling.localised_description = {"recipe-description.scrap-lithi
 scrap_lithium_recycling.icons =
 {
 	{
-		icon = "__quality__/graphics/icons/recycling.png",
+		icon = "__recycler__/graphics/icons/recycling.png",
 		icon_size = 64
 	},
 	{
@@ -23,13 +24,13 @@ scrap_lithium_recycling.icons =
 		shift = {9, -8}
 	},
 	{
-		icon = "__quality__/graphics/icons/recycling-top.png",
+		icon = "__recycler__/graphics/icons/recycling-top.png",
 		icon_size = 64
 	}
 }
 scrap_lithium_recycling.order = "a[trash]-b[lithium-recycling]"
 scrap_lithium_recycling.enabled = false
-table.insert(scrap_lithium_recycling.results, {type = "item", name = "lithium", amount = 1, probability = 0.01, show_details_in_recipe_tooltip = false})
+table.insert(scrap_lithium_recycling.results, {type = "item", name = "lithium", amount = 1, independent_probability = 0.01, show_details_in_recipe_tooltip = false})
 
 data:extend(
 {
@@ -40,7 +41,7 @@ data:extend(
 		localised_description = {"recipe-description.ammonia-synthesis"},
 		icon = "__space-age__/graphics/icons/fluid/ammonia.png",
 		icon_size = 64,
-		category = "chemistry-or-cryogenics",
+		categories = {"chemistry", "cryogenics"},
 		subgroup = "agriculture-processes",
 		order = "c[no-aquilo]-a[ammonia-synthesis]",
 		auto_recycle = false,
@@ -81,7 +82,7 @@ data:extend(
 				tint = {r = 0.36, g = 0.86, b = 0.20, a = 1.0}
 			}
 		},
-		category = "chemistry-or-cryogenics",
+		categories = {"chemistry", "cryogenics"},
 		subgroup = "vulcanus-processes",
 		order = "a[melting]-c[fluorine-extraction]",
 		auto_recycle = false,
@@ -121,7 +122,7 @@ data:extend(
 				shift = {-9, 9}
 			}
 		},
-		category = "chemistry-or-cryogenics",
+		categories = {"chemistry", "cryogenics"},
 		subgroup = "fulgora-processes",
 		order = "a[trash]-c[lithium-recovery]",
 		auto_recycle = false,

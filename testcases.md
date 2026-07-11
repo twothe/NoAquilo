@@ -1,6 +1,7 @@
 # No Aquilo Testcases
 
 - Load: the mod loads with Space Age enabled and no prototype errors.
+- Load: the mod loads on Factorio 2.1 with Quality both enabled and disabled.
 - Starmap: Aquilo is not available as a research unlock, route, or logistics destination.
 - Routes: `gleba-aquilo`, `fulgora-aquilo`, and `aquilo-solar-system-edge` are gone.
 - Routes: `fulgora-solar-system-edge` exists with length `150000` and uses the Aquilo-to-edge asteroid profile.
@@ -9,8 +10,11 @@
 - Technologies: `lithium-processing` uses normal research cost `500`, time `60`, and all science packs except Military, Cryogenic, and Promethium.
 - Technologies: `ammonia-synthesis`, `fluorine-processing`, and `lithium-recovery` use the same science-pack family.
 - Technologies: `lithium-recovery` costs `2000`, time `60`, and requires `lithium-processing`, `ammonia-synthesis`, and `fluorine-processing`.
+- Technologies: `stellar-discovery-solar-system-edge` requires Fusion Reactor and Railgun and unlocks `solar-system-edge`.
+- Recipes: the replacement chemical recipes use the 2.1 `chemistry` and `cryogenics` category list and remain craftable in both machines.
 - Lithium: raw lithium is not visible or obtainable before `lithium-processing`.
 - Lithium: late lithium-bearing scrap recycling unlocks after `lithium-processing` and appears as its own UI recipe.
+- Lithium: the lithium-bearing scrap recipe has an independent 1% lithium result under the Factorio 2.1 product-probability model.
 - Lithium: `lithium-recovery` unlocks and crafts `50 Scrap + 50 Petroleum Gas -> 10 Lithium` in 10 seconds.
 - Ammonia: `ammonia-synthesis` crafts `2 Spoilage + 2 Iron Ore + 100 Steam -> 50 Ammonia` in 2 seconds.
 - Ammonia: `ammoniacal-solution-separation`, `solid-fuel-from-ammonia`, and `ammonia-rocket-fuel` are not part of normal progression.
@@ -24,5 +28,7 @@
 - Default imports: generated `fluoroketone-cold-barrel` and `fluoroketone-hot-barrel` do not point to Aquilo.
 - Cryogenic chain: Cryogenic Plant, Cryogenic Science, Quantum Processor, Fusion, Foundation, Railgun, and Promethium Science are reachable without Aquilo.
 - Factoriopedia/UI: Aquilo-only tips, simulations, and recipe hints do not direct the player to Aquilo.
+- Factoriopedia/UI: the internal Aquilo planet and `ice-platform` tile prototypes are hidden from Factoriopedia.
 - Factoriopedia/UI: technology effects do not reference removed recipes such as `ammonia-rocket-fuel`.
+- Technologies: `rocket-fuel-productivity` no longer contains a productivity effect for the removed `ammonia-rocket-fuel` recipe.
 - New-game scope: a new Space Age game can progress from the three inner planet science packs to Solar System Edge unlock without visiting Aquilo.

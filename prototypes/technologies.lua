@@ -1,3 +1,4 @@
+-- Defines the replacement research gates for non-Aquilo resource production.
 local helpers = require("prototypes.helpers")
 
 local function standard_unit(count)

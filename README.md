@@ -1,6 +1,6 @@
 # No Aquilo
 
-No Aquilo is a Factorio 2.0 Space Age mod. It removes Aquilo from playable progression while keeping the late-game resource and technology chain complete through Fulgora, Vulcanus, and Gleba.
+No Aquilo is a Factorio 2.1 Space Age mod. It removes Aquilo from playable progression while keeping the late-game resource and technology chain complete through Fulgora, Vulcanus, and Gleba.
 
 The mod is implemented as data-stage prototype patches. It removes Aquilo research and routes, adds replacement ammonia, fluorine, and lithium sources, and keeps Cryogenic Science, fusion, railgun, foundation, and Promethium progression reachable without visiting Aquilo.
 
@@ -14,6 +14,7 @@ The mod is implemented as data-stage prototype patches. It removes Aquilo resear
 
 ## Baseline
 
-- Factorio: 2.0
+- Factorio: 2.1 experimental
 - Required expansion: Space Age
-- Local source reference used for the initial design: Factorio/Space Age `2.0.76`
+- Local source reference used for the 2.1 migration: Factorio/Space Age `2.1.9`
+- Compatibility: Factorio 2.0 is intentionally unsupported

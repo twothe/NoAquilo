@@ -1,5 +1,18 @@
 # No Aquilo - Design-Spezifikation
 
+## Technische Basis
+
+Der Mod zielt ausschließlich auf Factorio und Space Age 2.1. Factorio 2.0 wird nicht mehr unterstützt. Die Migration wurde gegen die installierten 2.1.9-Prototypdaten geprüft.
+
+Für No Aquilo relevante Änderungen gegenüber 2.0:
+
+- Rezepte verwenden `categories` statt `category` und `additional_categories`.
+- Die kombinierte Kategorie `chemistry-or-cryogenics` existiert nicht mehr. Ersatzrezepte nennen `chemistry` und `cryogenics` explizit.
+- Unabhängige Produktausbeuten verwenden `independent_probability` statt `probability`; dies betrifft die 1-%-Lithiumausbeute des Schrottrecyclings.
+- Recycling ist ein eigenes, von Space Age benötigtes `recycler`-Modul; Recycling-Grafiken kommen aus `__recycler__`.
+- Quality ist nur noch eine empfohlene Space-Age-Abhängigkeit. No Aquilo darf keine Quality-Abhängigkeit voraussetzen.
+- `solar-system-edge` wird durch die neue Technologie `stellar-discovery-solar-system-edge` freigeschaltet. No Aquilo behält deren Voraussetzungen `fusion-reactor` und `railgun` bei.
+
 ## Ziel
 
 No Aquilo entfernt Aquilo aus der spielbaren Space-Age-Progression, ohne die späte Spielphase abzukürzen oder Inhalte zu verschenken. Spieler sollen Aquilo nicht erforschen, bereisen, als Logistikziel sehen oder als Voraussetzung für spätere Technologien benötigen.
@@ -26,6 +39,8 @@ Aquilo muss nicht physisch aus `data.raw.planet` gelöscht werden. Entscheidend 
 - kein Importziel,
 - kein Rezept- oder Factoriopedia-Hinweis,
 - keine notwendige `surface_conditions`-Bindung.
+
+Der interne Planet-Prototyp bleibt für Space-Age-Datenreferenzen erhalten, wird aber ausdrücklich aus der Factoriopedia verborgen. Dasselbe gilt für den intern erhaltenen `ice-platform`-Tile-Prototyp.
 
 Kompatibilität mit anderen Space-Age-Overhaul-Mods ist kein Ziel der ersten Version.
 
@@ -74,7 +89,7 @@ Damit starten die Ersatztechnologien erst, wenn Vulcanus, Gleba und Fulgora sinn
 | `lithium-recovery` | 2000 | 60 | `lithium-processing`, `ammonia-synthesis`, `fluorine-processing` | `lithium-recovery` |
 | `cryogenic-plant` | unverändert, sofern der Trigger sauber bleibt | unverändert | `lithium-processing`, `ammonia-synthesis`, `fluorine-processing` | `cryogenic-plant`, `fluoroketone`, `fluoroketone-cooling` |
 
-`lithium-processing` verliert den ursprünglichen Research Trigger `mine-entity = lithium-iceberg-big`. Der Trigger ist ohne Aquilo unmöglich und wird durch normale Forschungskosten ersetzt.
+`lithium-processing` verliert den ursprünglichen 2.1-Research-Trigger `mine-entity` für `lithium-iceberg-big` und `lithium-iceberg-huge`. Der Trigger ist ohne Aquilo unmöglich und wird durch normale Forschungskosten ersetzt.
 
 `cryogenic-plant` darf den bestehenden Trigger `craft-item = lithium-plate` behalten, wenn die neuen Voraussetzungen zuverlässig verhindern, dass der Trigger vor der Ersatzkette greift. Falls das im Spiel unklar wirkt, wird `cryogenic-plant` später ebenfalls auf normale Forschung umgestellt.
 
@@ -82,10 +97,10 @@ Damit starten die Ersatztechnologien erst, wenn Vulcanus, Gleba und Fulgora sinn
 
 | Rezept | Maschine | Input | Output | Zeit |
 | --- | --- | --- | --- | ---: |
-| `ammonia-synthesis` | Chemical Plant, Cryogenic Plant | 2 Spoilage, 2 Iron Ore, 100 Steam | 50 Ammonia | 2 s |
-| `fluorine-extraction` | Chemical Plant, Cryogenic Plant | 10 Fluorit, 100 Sulfuric Acid | 100 Fluorine | 4 s |
+| `ammonia-synthesis` | Chemical Plant (`chemistry`), Cryogenic Plant (`cryogenics`) | 2 Spoilage, 2 Iron Ore, 100 Steam | 50 Ammonia | 2 s |
+| `fluorine-extraction` | Chemical Plant (`chemistry`), Cryogenic Plant (`cryogenics`) | 10 Fluorit, 100 Sulfuric Acid | 100 Fluorine | 4 s |
 | `scrap-lithium-recycling` | Recycler / Recycling-Kategorie | 1 Scrap | normale Scrap-Ergebnisse plus 1% Lithium | wie `scrap-recycling` |
-| `lithium-recovery` | Chemical Plant, Cryogenic Plant | 50 Scrap, 50 Petroleum Gas | 10 Lithium | 10 s |
+| `lithium-recovery` | Chemical Plant (`chemistry`), Cryogenic Plant (`cryogenics`) | 50 Scrap, 50 Petroleum Gas | 10 Lithium | 10 s |
 
 `scrap-lithium-recycling` ist ein eigenständiges sichtbares Rezept im UI. Das frühe originale `scrap-recycling` bleibt unverändert, damit Lithium vor `lithium-processing` nicht in Rezeptansichten oder Factoriopedia sichtbar wird.
 
@@ -106,7 +121,7 @@ Vulcanus erhält Fluorit als neue feste Fluorquelle.
 | Icon-Basis | `calcite` |
 | Farbgebung | an `uranium-ore` orientiert |
 
-Die Raketenkapazität wird in Factorio 2.0 über das Item-Gewicht modelliert. `2 * kg` entspricht typischen Erzen wie Iron Ore und ergibt bei Stack Size 50 die gewünschte Transportgröße.
+Die Raketenkapazität wird in Factorio 2.1 über das Item-Gewicht modelliert. `2 * kg` entspricht typischen Erzen wie Iron Ore und ergibt bei Stack Size 50 die gewünschte Transportgröße.
 
 Fluorit soll auf Vulcanus seltener als Calcite sein. Es ist ein Endgame-Gate und soll zuverlässig automatisierbar, aber nicht beiläufig verfügbar sein.
 
@@ -297,13 +312,16 @@ Die wichtigsten Playtest-Messpunkte sind:
 Eine erste spielbare Version gilt als akzeptiert, wenn alle folgenden Punkte erfüllt sind:
 
 - Aquilo ist nicht erforschbar, bereisbar oder als logistisches Ziel sichtbar.
+- Der interne Aquilo-Planet und der `ice-platform`-Tile sind nicht in der Factoriopedia sichtbar.
 - `planet-discovery-aquilo` ist entfernt.
 - Kein erforderlicher Fortschritt verweist auf Aquilo.
 - `gleba-aquilo`, `fulgora-aquilo` und `aquilo-solar-system-edge` existieren nicht mehr als normale Routen.
 - `fulgora-solar-system-edge` existiert mit `length = 150000` und dem Aquilo-zu-Edge-Asteroidenprofil.
+- `stellar-discovery-solar-system-edge` setzt `fusion-reactor` und `railgun` voraus und schaltet `solar-system-edge` frei.
 - Keine normale Progression nutzt `default_import_location = "aquilo"`.
 - `ice-platform`, `lithium-brine` und `ammoniacal-solution-separation` sind aus der normalen Progression entfernt.
 - `solid-fuel-from-ammonia` und `ammonia-rocket-fuel` sind aus der normalen Progression entfernt.
+- `rocket-fuel-productivity` enthält keinen Effekt für das entfernte Rezept `ammonia-rocket-fuel`.
 - `lithium-processing` hat Forschungskosten 500, Time 60 und die gemeinsame Science-Pack-Familie.
 - Rohes Lithium ist erst nach `lithium-processing` sichtbar.
 - Lithiumhaltiges Scrap-Recycling erscheint nach `lithium-processing` als eigenes UI-Rezept.

@@ -1,3 +1,4 @@
+-- Defines the public item subgroup used for relocated cryogenic products.
 data:extend(
 {
 	{

@@ -1,3 +1,4 @@
+-- Provides strict prototype lookup and narrowly scoped patch helpers.
 local helpers = {}
 
 helpers.standard_science_pack_unit =
@@ -73,6 +74,7 @@ function helpers.hide_recipe(recipe_name)
 	local recipe = helpers.require_raw("recipe", recipe_name)
 	recipe.enabled = false
 	recipe.hidden = true
+	recipe.hidden_in_factoriopedia = true
 	recipe.hide_from_player_crafting = true
 	return recipe
 end
@@ -80,6 +82,7 @@ end
 function helpers.hide_item(item_name)
 	local item = helpers.require_item(item_name)
 	item.hidden = true
+	item.hidden_in_factoriopedia = true
 	return item
 end
 
@@ -91,12 +94,18 @@ function helpers.hide_prototype(prototype_type, name)
 end
 
 function helpers.remove_technology_effects_for_recipe(recipe_name)
+	local removable_effect_types =
+	{
+		["unlock-recipe"] = true,
+		["change-recipe-productivity"] = true
+	}
+
 	for _, technology in pairs(data.raw.technology or {}) do
 		local effects = technology.effects
 		if effects then
 			for index = #effects, 1, -1 do
 				local effect = effects[index]
-				if effect.recipe == recipe_name then
+				if removable_effect_types[effect.type] and effect.recipe == recipe_name then
 					table.remove(effects, index)
 				end
 			end
@@ -124,10 +133,12 @@ function helpers.add_recipe_unlock(technology, recipe_name)
 	table.insert(technology.effects, {type = "unlock-recipe", recipe = recipe_name})
 end
 
-function helpers.set_recipe_unlocks(technology, recipe_names)
-	technology.effects = {}
-	for _, recipe_name in pairs(recipe_names) do
-		helpers.add_recipe_unlock(technology, recipe_name)
+function helpers.remove_recipe_unlock(technology, recipe_name)
+	for index = #(technology.effects or {}), 1, -1 do
+		local effect = technology.effects[index]
+		if effect.type == "unlock-recipe" and effect.recipe == recipe_name then
+			table.remove(technology.effects, index)
+		end
 	end
 end
 
@@ -154,15 +165,6 @@ function helpers.set_subgroup(prototype_type, name, subgroup, order)
 		prototype.order = order
 	end
 	return prototype
-end
-
-function helpers.contains(values, value)
-	for _, current in pairs(values or {}) do
-		if current == value then
-			return true
-		end
-	end
-	return false
 end
 
 return helpers
