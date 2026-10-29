@@ -210,6 +210,18 @@ end
 
 assert_no_aquilo_default_imports()
 
+local aquilo_map_gen_settings = helpers.require_raw("planet", "aquilo").map_gen_settings
+for _, control_name in pairs({"aquilo_crude_oil", "lithium_brine", "fluorine_vent"}) do
+	local control = helpers.require_raw("autoplace-control", control_name)
+	if not control.hidden then
+		fail("autoplace control '" .. control_name .. "' is still visible in the map generator.")
+	end
+	local settings = aquilo_map_gen_settings.autoplace_controls[control_name]
+	if not settings or settings.size ~= 0 or settings.richness ~= 0 or settings.frequency ~= 1 then
+		fail("autoplace control '" .. control_name .. "' must be disabled with size/richness zero and frequency one.")
+	end
+end
+
 local lithium_processing = helpers.require_raw("technology", "lithium-processing")
 if lithium_processing.research_trigger then
 	fail("lithium-processing still has a research trigger.")

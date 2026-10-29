@@ -1,6 +1,6 @@
 # Release Process
 
-Release builds are produced by `scripts/package-mod.sh` and by the GitHub Actions workflow in `.github/workflows/build-release.yml`.
+Release builds are produced by `scripts/package-mod.sh`, its native Windows counterpart `scripts/package-mod.ps1`, and the GitHub Actions workflow in `.github/workflows/build-release.yml`.
 
 The generated archive is named:
 
@@ -23,6 +23,7 @@ Exclude development-only files from release archives:
 - `testcases.md`
 - `todo.md`
 - release/check scripts
+- `tests/`
 - temporary files
 
 The package script copies only Factorio runtime paths, so development files are excluded by construction.
@@ -36,6 +37,14 @@ bash scripts/package-mod.sh
 ```
 
 The output is written to `dist/<mod-name>_<version>.zip`.
+
+On Windows with PowerShell 7, no Bash, jq, or external ZIP tool is required:
+
+```powershell
+pwsh -File scripts/package-mod.ps1
+```
+
+Both scripts use the same explicit runtime-path allowlist. Keep that list synchronized when introducing new runtime paths. `scripts/test-mod.ps1` builds an isolated ZIP with the PowerShell packager and loads it in Factorio with and without Quality.
 
 ## GitHub Actions
 

@@ -14,7 +14,9 @@ The mod is implemented as data-stage prototype patches. It removes Aquilo resear
 
 ## Baseline
 
-- Factorio: 2.1 experimental
+- Factorio: 2.1
 - Required expansion: Space Age
-- Local source reference used for the 2.1 migration: Factorio/Space Age `2.1.9`
+- Verified engine and prototype baseline: Factorio/Space Age `2.1.23`, with Quality enabled and disabled
 - Compatibility: Factorio 2.0 is intentionally unsupported
+
+On Windows, run `pwsh -File scripts/test-mod.ps1` to package the mod and run the isolated Factorio regression checks. See `docs/testing.md` for coverage and remaining manual checks.

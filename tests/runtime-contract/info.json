@@ -1,0 +1,8 @@
+{
+  "name": "no-aquilo-runtime-contract",
+  "version": "1.0.0",
+  "title": "No Aquilo runtime contract tests",
+  "author": "No Aquilo contributors",
+  "factorio_version": "2.1",
+  "dependencies": ["no-aquilo"]
+}

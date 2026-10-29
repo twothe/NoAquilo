@@ -2,7 +2,7 @@
 
 ## Technische Basis
 
-Der Mod zielt ausschließlich auf Factorio und Space Age 2.1. Factorio 2.0 wird nicht mehr unterstützt. Die Migration wurde gegen die installierten 2.1.9-Prototypdaten geprüft.
+Der Mod zielt ausschließlich auf Factorio und Space Age 2.1. Factorio 2.0 wird nicht mehr unterstützt. Die ursprüngliche Migration basierte auf 2.1.9; Version 2.2.0 des Mods wurde mit Factorio/Space Age 2.1.23 und jeweils aktiviertem sowie deaktiviertem Quality geprüft.
 
 Für No Aquilo relevante Änderungen gegenüber 2.0:
 
@@ -41,6 +41,8 @@ Aquilo muss nicht physisch aus `data.raw.planet` gelöscht werden. Entscheidend 
 - keine notwendige `surface_conditions`-Bindung.
 
 Der interne Planet-Prototyp bleibt für Space-Age-Datenreferenzen erhalten, wird aber ausdrücklich aus der Factoriopedia verborgen. Dasselbe gilt für den intern erhaltenen `ice-platform`-Tile-Prototyp.
+
+Die separaten Kartengenerator-Regler `aquilo_crude_oil`, `lithium_brine` und `fluorine_vent` sind verborgen. Ihre Aquilo-Standardwerte setzen Größe und Reichhaltigkeit auf null, sodass keine dieser Ressourcen generiert wird. Die Frequenz bleibt bei eins: Die originalen Aquilo-Noise-Ausdrücke teilen durch diesen Wert und würden bei null fehlschlagen. Die Regler-Prototypen bleiben wegen dieser internen Referenzen erhalten. Normales Rohöl auf Nauvis sowie Fluorit auf Vulcanus bleiben unverändert aktiv.
 
 Kompatibilität mit anderen Space-Age-Overhaul-Mods ist kein Ziel der ersten Version.
 
@@ -313,6 +315,7 @@ Eine erste spielbare Version gilt als akzeptiert, wenn alle folgenden Punkte erf
 
 - Aquilo ist nicht erforschbar, bereisbar oder als logistisches Ziel sichtbar.
 - Der interne Aquilo-Planet und der `ice-platform`-Tile sind nicht in der Factoriopedia sichtbar.
+- Die drei Aquilo-Ressourcenregler sind im Kartengenerator verborgen und ihre planetaren Standardwerte deaktiviert; normale Ressourcen anderer Planeten bleiben aktiv.
 - `planet-discovery-aquilo` ist entfernt.
 - Kein erforderlicher Fortschritt verweist auf Aquilo.
 - `gleba-aquilo`, `fulgora-aquilo` und `aquilo-solar-system-edge` existieren nicht mehr als normale Routen.

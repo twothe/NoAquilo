@@ -88,6 +88,15 @@ local function hide_removed_progression()
 	helpers.hide_prototype("planet", "aquilo")
 end
 
+local function disable_aquilo_resource_controls()
+	local map_gen_settings = helpers.require_raw("planet", "aquilo").map_gen_settings
+	for _, control_name in pairs({"aquilo_crude_oil", "lithium_brine", "fluorine_vent"}) do
+		helpers.hide_prototype("autoplace-control", control_name)
+		-- Size zero disables generation. Frequency must stay positive because Aquilo noise divides by it.
+		map_gen_settings.autoplace_controls[control_name] = {frequency = 1, size = 0, richness = 0}
+	end
+end
+
 local function patch_surface_conditions()
 	local aquilo_locked_recipes =
 	{
@@ -168,6 +177,7 @@ patch_space_connections()
 patch_lithium_processing()
 patch_cryogenic_plant()
 hide_removed_progression()
+disable_aquilo_resource_controls()
 patch_surface_conditions()
 patch_default_import_locations()
 patch_visible_fluid_sorting()

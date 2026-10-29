@@ -2,6 +2,10 @@
 
 - Load: the mod loads with Space Age enabled and no prototype errors.
 - Load: the mod loads on Factorio 2.1 with Quality both enabled and disabled.
+- Map generator (issue #1): `aquilo_crude_oil`, `lithium_brine`, and `fluorine_vent` controls are hidden, including after switching presets.
+- Map generator (issue #1): effective Aquilo resource settings default to size/richness zero and frequency one; an internal Aquilo preview generates none of those resources and compiles without noise errors.
+- Map generator: Nauvis crude oil, Vulcanus fluorite/calcite, and Fulgora scrap remain enabled; Vulcanus generates nonzero fluorite and calcite.
+- Runtime: a new game can be saved, reloaded, and advanced with the exact release ZIP, both with and without Quality.
 - Starmap: Aquilo is not available as a research unlock, route, or logistics destination.
 - Routes: `gleba-aquilo`, `fulgora-aquilo`, and `aquilo-solar-system-edge` are gone.
 - Routes: `fulgora-solar-system-edge` exists with length `150000` and uses the Aquilo-to-edge asteroid profile.
